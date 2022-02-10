@@ -83,4 +83,8 @@
 
     <!-- Pocket Service -->
     <java-symbol type="string" name="config_pocketJudgeVendorSensorName" />
+
+  <!-- Button backlight -->
+  <java-symbol type="integer" name="config_deviceSupportsButtonBrightnessControl" />
+  <java-symbol type="dimen" name="config_buttonBrightnessSettingDefaultFloat" />
 </resources>
