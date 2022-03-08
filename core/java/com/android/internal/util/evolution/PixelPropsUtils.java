@@ -37,9 +37,8 @@ public class PixelPropsUtils {
 
     private static final Map<String, Object> propsToChangePixel6;
 
-    private static final Map<String, Object> propsToChangePixel5;
-    private static final String[] packagesToChangePixel5 = {
-            "com.google.android.apps.photos",
+    private static final Map<String, Object> propsToChangePixel5a;
+    private static final String[] packagesToChangePixel5a = {
             "com.google.android.apps.recorder",
             "com.google.android.apps.translate",
             "com.google.android.apps.turbo",
@@ -153,13 +152,13 @@ public class PixelPropsUtils {
         propsToChangePixel6.put("PRODUCT", "raven");
         propsToChangePixel6.put("MODEL", "Pixel 6 Pro");
         propsToChangePixel6.put("FINGERPRINT", "google/raven/raven:12/SQ1D.220205.004/8151327:user/release-keys");
-        propsToChangePixel5 = new HashMap<>();
-        propsToChangePixel5.put("BRAND", "google");
-        propsToChangePixel5.put("MANUFACTURER", "Google");
-        propsToChangePixel5.put("DEVICE", "redfin");
-        propsToChangePixel5.put("PRODUCT", "redfin");
-        propsToChangePixel5.put("MODEL", "Pixel 5");
-        propsToChangePixel5.put("FINGERPRINT", "google/redfin/redfin:12/SP2A.220305.012/8177914:user/release-keys");
+        propsToChangePixel5a = new HashMap<>();
+        propsToChangePixel5a.put("BRAND", "google");
+        propsToChangePixel5a.put("MANUFACTURER", "Google");
+        propsToChangePixel5a.put("DEVICE", "barbet");
+        propsToChangePixel5a.put("PRODUCT", "barbet");
+        propsToChangePixel5a.put("MODEL", "Pixel 5a");
+        propsToChangePixel5a.put("FINGERPRINT", "google/barbet/barbet:12/SP2A.220305.012/8177914:user/release-keys");
         propsToChangePixelXL = new HashMap<>();
         propsToChangePixelXL.put("BRAND", "google");
         propsToChangePixelXL.put("MANUFACTURER", "Google");
@@ -190,33 +189,26 @@ public class PixelPropsUtils {
                 || Arrays.asList(extraPackagesToChange).contains(packageName)
                 || Arrays.asList(streamingPackagesToChange).contains(packageName))) {
 
-            if (packageName.equals("com.google.android.apps.photos")) {
-                if (!SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", true))
-                    return;
-            }
-
             if (Arrays.asList(streamingPackagesToChange).contains(packageName)) {
                 if (!SystemProperties.getBoolean("persist.sys.pixelprops.streaming", true))
                     return;
             }
 
-            Map<String, Object> propsToChange = propsToChangePixel6;
+            Map<String, Object> propsToChange = propsToChangePixel5a;
 
-            if (Arrays.asList(packagesToChangePixel5).contains(packageName)) {
-                if (packageName.equals("com.google.android.apps.photos")) {
-                    if (!SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", true))
-                        return;
+            if (packageName.equals("com.google.android.apps.photos")) {
+                if (SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", true)) {
+                    propsToChange = propsToChangePixelXL;
+                } else {
+                    propsToChange = propsToChangePixel5a;
                 }
-                propsToChange = propsToChangePixel5;
-            }
-
-            if ((Arrays.asList(packagesToChangePixelXL).contains(packageName))
-                    || (packageName.equals("com.google.android.apps.photos"))) {
-                if ((packageName.equals("com.google.android.apps.photos")
-                        && !SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", true))) {
-                    return;
+            } else {
+                if (Arrays.asList(packagesToChangePixel5a).contains(packageName)) {
+                    propsToChange = propsToChangePixel5a;
                 }
-                propsToChange = propsToChangePixelXL;
+                if (Arrays.asList(packagesToChangePixelXL).contains(packageName)) {
+                    propsToChange = propsToChangePixelXL;
+                }
             }
 
             if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
